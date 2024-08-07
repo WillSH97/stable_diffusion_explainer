@@ -22,6 +22,9 @@ def get_torch_device():
         os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = "1"
     return torch_device
 
+torch_device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
+if "mps" == torch_device: 
+    os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = "1"
 
 def load_all_models(torch_device: str):
     # Load the tokenizer and text encoder to tokenize and encode the text.
@@ -41,7 +44,26 @@ def load_all_models(torch_device: str):
     # Scheduler
     scheduler = LMSDiscreteScheduler.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="scheduler")
 
-    return 
+    return
+
+# Load the tokenizer and text encoder to tokenize and encode the text.
+tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
+
+text_encoder = CLIPTextModel.from_pretrained("openai/clip-vit-large-patch14")
+text_encoder = text_encoder.to(torch_device).half()
+
+# Load the autoencoder model which will be used to decode the latents into image space.
+vae = AutoencoderKL.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="vae")
+vae = vae.to(torch_device).half()
+
+# UNet
+unet = UNet2DConditionModel.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="unet")
+unet=unet.to(torch_device).half()
+
+# Scheduler
+scheduler = LMSDiscreteScheduler.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="scheduler")
+
+
 
 
 
