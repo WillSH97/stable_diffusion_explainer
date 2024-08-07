@@ -13,11 +13,9 @@ setup(
         "transformers",
         "diffusers",
         "accelerate",
-        "PIL",
+        "pillow",
         "requests",
-        "io",
         "numpy",
         "matplotlib",
-        "
     ],
 )
