@@ -82,24 +82,24 @@ def sentence_embedder(stringlist):
         sentence_embeddings=text_encoder(**inputs)
     return sentence_embeddings
 
-# #Q do I need this here????
-# uncond_embeddings=sentence_embedder([''])[0]
+#Q do I need this here????
+uncond_embeddings=sentence_embedder([''])[0]
 
 
 
-### VAE ###
+## VAE ###
 
-# # Function for turning an image into a VAE input-- Do I need htis?
-# def img2VAETensor(PILImage): 
-#     PILImage=PILImage.convert('RGB')
-#     ImgTensor=tfms.ToTensor()(PILImage).unsqueeze(0) * 2.0 - 1.0
-#     return ImgTensor
+# Function for turning an image into a VAE input-- Do I need htis?
+def img2VAETensor(PILImage): 
+    PILImage=PILImage.convert('RGB')
+    ImgTensor=tfms.ToTensor()(PILImage).unsqueeze(0) * 2.0 - 1.0
+    return ImgTensor
 
-# # VAE encoder function -- Do I need this???
-# def VAE_encode(VAETensor):
-#     init_encode=vae.encode(VAETensor)
-#     encoded_sample=init_encode.latent_dist.sample()*0.18215
-#     return encoded_sample
+# VAE encoder function -- Do I need this???
+def VAE_encode(VAETensor):
+    init_encode=vae.encode(VAETensor)
+    encoded_sample=init_encode.latent_dist.sample()*0.18215
+    return encoded_sample
 
 
 def VAE_decode(VAE_encoded_sample):
@@ -118,27 +118,37 @@ def VAE_decode(VAE_encoded_sample):
 
 
 
-# # Image Utils -- Q do I need these???
-# def image_grid(imgs, rows, cols):
-#     assert len(imgs) == rows*cols
+# Image Utils -- Q do I need these???
+elonURL = requests.get('https://preview.redd.it/twsliey41yk21.jpg?width=640&crop=smart&auto=webp&s=19e34b31877d410d141c019faad30d967caffa16')
+elonImg = Image.open(BytesIO(elonURL.content))
+elonImg=elonImg.crop((0,50,640,690))
+elonImg=elonImg.resize((512,512))
 
-#     w, h = imgs[0].size
-#     grid = Image.new('RGB', size=(cols*w, rows*h))
-#     grid_w, grid_h = grid.size
+elonTensor=img2VAETensor(elonImg).to(torch_device).half()
 
-#     for i, img in enumerate(imgs):
-#         grid.paste(img, box=(i%cols*w, i//cols*h))
-#     return grid
+elonEncodedSample=VAE_encode(elonTensor)
 
-# def get_image(URL):
-#     ImgURL = requests.get(URL)
-#     Img = Image.open(BytesIO(ImgURL.content))
+
+def image_grid(imgs, rows, cols):
+    assert len(imgs) == rows*cols
+
+    w, h = imgs[0].size
+    grid = Image.new('RGB', size=(cols*w, rows*h))
+    grid_w, grid_h = grid.size
+
+    for i, img in enumerate(imgs):
+        grid.paste(img, box=(i%cols*w, i//cols*h))
+    return grid
+
+def get_image(URL):
+    ImgURL = requests.get(URL)
+    Img = Image.open(BytesIO(ImgURL.content))
     
-#     lrdiff=Img.size[0]-min(Img.size)
-#     tbdiff=Img.size[1]-min(Img.size)
-#     Img = Img.crop((0,0,Img.size[0]-lrdiff, Img.size[1]-tbdiff))
-#     Img = Img.resize((512,512))
-#     return Img
+    lrdiff=Img.size[0]-min(Img.size)
+    tbdiff=Img.size[1]-min(Img.size)
+    Img = Img.crop((0,0,Img.size[0]-lrdiff, Img.size[1]-tbdiff))
+    Img = Img.resize((512,512))
+    return Img
 
     
 # def downres(Img):
