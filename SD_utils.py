@@ -79,7 +79,7 @@ def sentence_embedder(stringlist):
     inputs=tokenize(stringlist)
     inputs=inputs.to(torch_device)
     with torch.no_grad():
-        sentence_embeddings=text_encoder(**inputs)
+        sentence_embeddings=text_encoder(inputs.input_ids)
     return sentence_embeddings
 
 #Q do I need this here????
