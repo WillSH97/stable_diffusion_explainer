@@ -7,6 +7,7 @@ setup(
     author_email="william.he@qut.edu.au",
     description="SD Utils for SD v1.4 explainer",
     packages=find_packages(),
+    py_modules=['bacon'],
     install_requires=[
         "torch",
         "torchvision",
