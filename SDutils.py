@@ -164,7 +164,7 @@ def get_image(URL):
 #     tensor_Img=img2VAETensor(orig_img).to(torch_device).half()
 #     encodedSample=VAE_encode(tensor_Img)
 #     decoded_img=VAE_decode(encodedSample)
-    return image_grid([orig_img, downres_img, decoded_img], 1, 3)
+    # return image_grid([orig_img, downres_img, decoded_img], 1, 3)
 
 # # this is setting the number of theoretical denoising steps we're doing. This number is arbitrary - ignore it for now.
 # scheduler.set_timesteps(100)
