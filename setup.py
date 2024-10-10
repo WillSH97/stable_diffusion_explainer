@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="SD_utils",
+    name="SDutils",
     version="0.0.1",
     author="QUT GenAI Lab",
     author_email="william.he@qut.edu.au",
