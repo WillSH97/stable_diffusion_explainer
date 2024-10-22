@@ -121,15 +121,8 @@ def VAE_decode(VAE_encoded_sample):
 # Image Utils -- Q do I need these???
 
 #monkey guy
-monkey_url = "https://pbs.twimg.com/media/FHCOhT4WQAEA8-6?format=jpg&name=900x900"
-monkey_request = requests.get(monkey_url)
-monkey_img = Image.open(BytesIO(monkey_request.content))
-monkey_img = monkey_img.crop((0, 0, 718, 718))
 
-monkey_img = monkey_img.resize((512, 512))
-monkey_tensor = img2VAETensor(monkey_img).to(torch_device).half()
 
-monkey_encoded_sample = VAE_encode(monkey_tensor)
 
 
 
@@ -154,6 +147,12 @@ def get_image(URL):
     Img = Img.crop((0,0,Img.size[0]-lrdiff, Img.size[1]-tbdiff))
     Img = Img.resize((512,512))
     return Img
+
+def generate_VAE_example_objects(URL):
+    ex_img = get_image(URL)
+    ex_tensor = img2VAETensor(ex_img).to(torch_device).half()
+    ex_encoded_sample = VAE_encode(ex_tensor)
+    return ex_img, ex_tensor, ex_encoded_sample
 
     
 # def downres(Img):
