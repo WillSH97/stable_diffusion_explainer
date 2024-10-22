@@ -119,14 +119,19 @@ def VAE_decode(VAE_encoded_sample):
 
 
 # Image Utils -- Q do I need these???
-elonURL = requests.get('https://preview.redd.it/twsliey41yk21.jpg?width=640&crop=smart&auto=webp&s=19e34b31877d410d141c019faad30d967caffa16')
-elonImg = Image.open(BytesIO(elonURL.content))
-elonImg=elonImg.crop((0,50,640,690))
-elonImg=elonImg.resize((512,512))
 
-elonTensor=img2VAETensor(elonImg).to(torch_device).half()
+#monkey guy
+monkey_url = "https://pbs.twimg.com/media/FHCOhT4WQAEA8-6?format=jpg&name=900x900"
+monkey_request = requests.get(monkey_url)
+monkey_img = Image.open(BytesIO(monkey_request.content))
+monkey_img = monkey_img.crop((0, 0, 718, 718))
 
-elonEncodedSample=VAE_encode(elonTensor)
+monkey_img = monkey_img.resize((512, 512))
+monkey_tensor = img2VAETensor(monkey_img).to(torch_device).half()
+
+monkey_encoded_sample = VAE_encode(monkey_tensor)
+
+
 
 
 def image_grid(imgs, rows, cols):
