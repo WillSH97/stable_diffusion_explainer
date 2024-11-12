@@ -26,20 +26,22 @@ torch_device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.
 if "mps" == torch_device: 
     os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = "1"
 
+torch_dtype = torch.float16 if torch_device in ["cuda", "mps"] else torch.float32
+
 def load_all_models(torch_device: str):
     # Load the tokenizer and text encoder to tokenize and encode the text.
     tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
     
     text_encoder = CLIPTextModel.from_pretrained("openai/clip-vit-large-patch14")
-    text_encoder = text_encoder.to(torch_device).half()
+    text_encoder = text_encoder.to(device = torch_device, dtype = torch_dtype)
     
     # Load the autoencoder model which will be used to decode the latents into image space.
     vae = AutoencoderKL.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="vae")
-    vae = vae.to(torch_device).half()
+    vae = vae.to(device = torch_device, dtype = torch_dtype)
     
     # UNet
     unet = UNet2DConditionModel.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="unet")
-    unet=unet.to(torch_device).half()
+    unet=unet.to(device = torch_device, dtype = torch_dtype)
     
     # Scheduler
     scheduler = LMSDiscreteScheduler.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="scheduler")
@@ -50,15 +52,15 @@ def load_all_models(torch_device: str):
 tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
 
 text_encoder = CLIPTextModel.from_pretrained("openai/clip-vit-large-patch14")
-text_encoder = text_encoder.to(torch_device).half()
+text_encoder = text_encoder.to(device = torch_device, dtype = torch_dtype)
 
 # Load the autoencoder model which will be used to decode the latents into image space.
 vae = AutoencoderKL.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="vae")
-vae = vae.to(torch_device).half()
+vae = vae.to(device = torch_device, dtype = torch_dtype)
 
 # UNet
 unet = UNet2DConditionModel.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="unet")
-unet=unet.to(torch_device).half()
+unet=unet.to(device = torch_device, dtype = torch_dtype)
 
 # Scheduler
 scheduler = LMSDiscreteScheduler.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="scheduler")
@@ -150,7 +152,7 @@ def get_image(URL):
 
 def generate_VAE_example_objects(URL):
     ex_img = get_image(URL)
-    ex_tensor = img2VAETensor(ex_img).to(torch_device).half()
+    ex_tensor = img2VAETensor(ex_img).to(device = torch_device, dtype = torch_dtype)
     ex_encoded_sample = VAE_encode(ex_tensor)
     return ex_img, ex_tensor, ex_encoded_sample
 
@@ -165,7 +167,7 @@ def generate_VAE_example_objects(URL):
 #     orig_img=get_image(URL)
 #     downres_img=downres(orig_img)
 
-#     tensor_Img=img2VAETensor(orig_img).to(torch_device).half()
+#     tensor_Img=img2VAETensor(orig_img).to(device = torch_device, dtype = torch_dtype)
 #     encodedSample=VAE_encode(tensor_Img)
 #     decoded_img=VAE_decode(encodedSample)
     # return image_grid([orig_img, downres_img, decoded_img], 1, 3)
